@@ -51,9 +51,19 @@
                             <i class="fas fa-utensils me-2"></i>Питание
                         </h3>
                         <div class="mb-3">
-                            <label for="nutrition" class="form-label">Как ты питаешься? (честно, без прикрас)</label>
-                            <textarea class="form-control" id="nutrition" name="nutrition" rows="3" 
-                                placeholder="Например: ем нерегулярно, много сладкого, часто заказываю еду, пропускаю завтрак..." required></textarea>
+                            <label for="nutrition" class="form-label">Как ты питаешься?</label>
+                            <select class="form-select" id="nutrition_select" name="nutrition_select" onchange="toggleCustomInput('nutrition')">
+                                <option value="">Выбери вариант</option>
+                                <option value="регулярно, здоровая еда">Регулярно, здоровая еда</option>
+                                <option value="нерегулярно, много фастфуда">Нерегулярно, много фастфуда</option>
+                                <option value="много сладкого и перекусов">Много сладкого и перекусов</option>
+                                <option value="пропускаю приемы пищи">Пропускаю приемы пищи</option>
+                                <option value="заказываю готовую еду">Заказываю готовую еду</option>
+                                <option value="готовлю дома">Готовлю дома</option>
+                                <option value="other">Другое</option>
+                            </select>
+                            <textarea class="form-control mt-2 d-none" id="nutrition_custom" name="nutrition_custom" rows="2" 
+                                placeholder="Опиши свой рацион подробнее..."></textarea>
                         </div>
                     </div>
 
@@ -63,8 +73,17 @@
                         </h3>
                         <div class="mb-3">
                             <label for="activity" class="form-label">Как часто ты двигаешься?</label>
-                            <textarea class="form-control" id="activity" name="activity" rows="3" 
-                                placeholder="Например: сижу весь день за компом, хожу только до магазина, спортом не занимаюсь..." required></textarea>
+                            <select class="form-select" id="activity_select" name="activity_select" onchange="toggleCustomInput('activity')">
+                                <option value="">Выбери вариант</option>
+                                <option value="регулярные тренировки 3+ раза в неделю">Регулярные тренировки 3+ раза в неделю</option>
+                                <option value="иногда хожу в спортзал">Иногда хожу в спортзал</option>
+                                <option value="только ходьба и домашние дела">Только ходьба и домашние дела</option>
+                                <option value="сижу весь день, мало двигаюсь">Сижу весь день, мало двигаюсь</option>
+                                <option value="активная работа, много хожу">Активная работа, много хожу</option>
+                                <option value="other">Другое</option>
+                            </select>
+                            <textarea class="form-control mt-2 d-none" id="activity_custom" name="activity_custom" rows="2" 
+                                placeholder="Опиши свою активность подробнее..."></textarea>
                         </div>
                     </div>
 
@@ -74,8 +93,17 @@
                         </h3>
                         <div class="mb-3">
                             <label for="sleep" class="form-label">Расскажи про свой сон</label>
-                            <textarea class="form-control" id="sleep" name="sleep" rows="3" 
-                                placeholder="Например: ложусь в 2-3 ночи, сплю 5-6 часов, часто просыпаюсь, засыпаю с телефоном..." required></textarea>
+                            <select class="form-select" id="sleep_select" name="sleep_select" onchange="toggleCustomInput('sleep')">
+                                <option value="">Выбери вариант</option>
+                                <option value="сплю 7-8 часов, ложусь до 23:00">Сплю 7-8 часов, ложусь до 23:00</option>
+                                <option value="сплю 6-7 часов, ложусь до полуночи">Сплю 6-7 часов, ложусь до полуночи</option>
+                                <option value="сплю 5-6 часов, ложусь поздно">Сплю 5-6 часов, ложусь поздно</option>
+                                <option value="часто не высыпаюсь, проблемы с засыпанием">Часто не высыпаюсь, проблемы с засыпанием</option>
+                                <option value="засыпаю с телефоном/ТВ">Засыпаю с телефоном/ТВ</option>
+                                <option value="other">Другое</option>
+                            </select>
+                            <textarea class="form-control mt-2 d-none" id="sleep_custom" name="sleep_custom" rows="2" 
+                                placeholder="Опиши режим сна подробнее..."></textarea>
                         </div>
                     </div>
 
@@ -157,6 +185,21 @@
 
 {% block extra_scripts %}
 <script>
+// Toggle custom input field for "Other" option
+function toggleCustomInput(fieldName) {
+    const select = document.getElementById(fieldName + '_select');
+    const customField = document.getElementById(fieldName + '_custom');
+    
+    if (select.value === 'other') {
+        customField.classList.remove('d-none');
+        customField.required = true;
+    } else {
+        customField.classList.add('d-none');
+        customField.required = false;
+        customField.value = '';
+    }
+}
+
 // Form validation and UX improvements
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('.questionnaire-form');

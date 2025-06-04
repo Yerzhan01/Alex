@@ -26,15 +26,21 @@ def questionnaire():
 def submit_questionnaire():
     """Process questionnaire submission and generate free report"""
     try:
-        # Get form data
+        # Get form data with support for dropdown + custom fields
+        def get_field_value(field_name):
+            select_value = request.form.get(f'{field_name}_select', '')
+            if select_value == 'other':
+                return request.form.get(f'{field_name}_custom', '')
+            return select_value or request.form.get(field_name, '')
+        
         user_data = {
             'age': int(request.form.get('age', 0)),
             'gender': request.form.get('gender', ''),
             'weight': int(request.form.get('weight', 0)),
             'height': int(request.form.get('height', 0)),
-            'nutrition': request.form.get('nutrition', ''),
-            'activity': request.form.get('activity', ''),
-            'sleep': request.form.get('sleep', ''),
+            'nutrition': get_field_value('nutrition'),
+            'activity': get_field_value('activity'),
+            'sleep': get_field_value('sleep'),
             'stress': request.form.get('stress', ''),
             'digital': request.form.get('digital', ''),
             'habits': request.form.get('habits', ''),

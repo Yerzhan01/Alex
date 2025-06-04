@@ -1,0 +1,76 @@
+Интеграция Оплата: QuickPayments Kaspi Partner для приложений клиентов
+Для создания внешней интеграции DauysKit x Kaspi.kz необходимо передать команде DauysKit следующие
+данные
+callbackUrl - URL адрес на который будут отправляться уведомления о успешной оплате
+token - токен, который будет приходить вместе с уведомлением об успешной оплате (В Headers в виде
+Authorization: Bearer <token>)
+Выставление счета на оплату
+integrationId - Будет предоставлен командой DauysKit после создания интеграции
+1 POST https://ks.dauys.com/api/quick-payment/partner-kaspi/{{integrationId}}/invoice
+2 Content-Type: application/json
+3
+4 {
+5 "sum": 1000, // minimum 1
+6 "productName": "Test invoice", // Название товара, которое будет отображаться в каспи
+7 "account": "12345" // опциональное поле для вашего ID пользователя
+8 }
+Response:
+1 {
+2 "_id": "6790f40451f0eea99ed3ab27", // ID инвойса
+3 "botId": "673332b2ab5f123ff25a4605", // id привязанного бота (для учета кассы)
+4 "phoneNumber": "12345", // опциональное поле для вашего ID пользователя
+5 "botName": "condition check", // Название кассы
+6 "botUserId": "5a94f486-4d2b-420d-ab91-564017321735",
+7 "companyId": "6385d1463d8f33d87958a03a",
+8 "createdAt": "2025-01-22T13:43:34.664Z",
+9 "customer": "77051333393",
+10 "integrationId": "6790f3e3b631eaf427baaaa3",
+11 "isAPICreated": true,
+12 "messengerId": "12345", // опциональное поле для вашего ID пользователя
+13 "price": 1,
+14 "productName": "Testing new feature",
+15 "status": "PENDING",
+16 "paymentUrl": "https://kaspi.kz/pay/DauysKitBots1?service_id=10537&15247=6790f40451f0eea99ed3ab27-6385d1463d
+17 }
+Ссылка на оплату возвращается в ответе в виде paymentUrl
+Проверка статуса инвойса
+GET
+integrationId - Будет предоставлен командой DauysKit после создания интеграции
+invoiceId - это поле response._id из предыдущего запроса
+https://ks.dauys.com/api/quick-payment/partner-kaspi/{{integrationId}}/invoice/{{invoiceId}}
+Webhook: Получение оплаты
+При успешной оплате будет отправлен следующий запрос на ваш эндпоинт, который указан раннее
+1 POST <callbackUrl>
+2 Content-Type: application/json
+3 Authorization: Bearer <token>
+4
+5 {
+6 "transactionId": "2132134563223423",
+7 "account": "6790f40451f0eea99ed3ab27-6385d1463d8f33d87958a03a",
+8 "sum": 1,
+9 "kaspiDate": "20230714145941",
+10 "timestamp": 1689328781,
+11 "invoiceId": "6790f40451f0eea99ed3ab27",
+12 "productName": "Testing new feature",
+13 "botId": "673332b2ab5f123ff25a4605",
+14 "botName": "condition check",
+15 "status": " {
+    "statusCode": 200,
+    "companyId": "63f72e3a8f33bbedd2317cd8",
+    "botId": "6836be9b14569330af33b8fa",
+    "type": "partnerKaspi",
+    "isActive": true,
+    "config": {
+        "phoneField": "messengerId",
+        "callbackUrl": "",
+        "token": "111",
+        "ignoreIPCheck": true,
+        "allowedIps": [],
+        "allowedReferrers": [
+            "https://dauyskit.com/testform"
+        ]
+    },
+    "_id": "68405a37b7170fa164bd4158",
+    "createdAt": "2025-06-04T14:37:43.183Z",
+    "updatedAt": "2025-06-04T14:37:43.183Z"
+}
