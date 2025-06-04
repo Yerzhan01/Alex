@@ -115,7 +115,7 @@ def buy_full_report(session_id):
         
         # Create Kaspi invoice
         invoice_data = kaspi.create_invoice(
-            amount=2990,
+            amount=1,
             product_name="AI Health Report - Полный отчет о здоровье",
             account_id=session_id
         )
@@ -136,7 +136,7 @@ def buy_full_report(session_id):
             return render_template('kaspi_payment.html', 
                                  session_id=session_id, 
                                  payment_id=payment_id,
-                                 amount=2990)
+                                 amount=1)
         
     except Exception as e:
         app.logger.error(f"Error creating payment: {e}")
