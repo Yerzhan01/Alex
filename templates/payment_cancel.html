@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Платёж отменён - AI Health Report{% endblock %}
+
+{% block content %}
+<section class="cancel-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="cancel-card">
+                    <div class="cancel-icon mb-4">
+                        <i class="fas fa-times-circle text-warning"></i>
+                    </div>
+                    <h1 class="mb-4">😔 Платёж отменён</h1>
+                    <p class="lead mb-4">
+                        Ничего страшного! Твой бесплатный отчёт никуда не денется. 
+                        Можешь вернуться к полной версии в любое время.
+                    </p>
+                    
+                    <div class="cancel-options mb-5">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="option-card">
+                                    <i class="fas fa-gift text-success mb-3"></i>
+                                    <h5>Бесплатный отчёт</h5>
+                                    <p>Основные рекомендации и анализ уже доступны</p>
+                                    <a href="{{ url_for('show_report', session_id=session_id) }}" 
+                                       class="btn btn-outline-success">
+                                        Посмотреть
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="option-card">
+                                    <i class="fas fa-star text-primary mb-3"></i>
+                                    <h5>Полная версия</h5>
+                                    <p>Детальный анализ с PDF — всего за 999₽</p>
+                                    <a href="{{ url_for('buy_full_report', session_id=session_id) }}" 
+                                       class="btn btn-outline-primary">
+                                        Попробовать снова
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cancel-reasons">
+                        <h5>Остались вопросы?</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="reason-item">
+                                    <i class="fas fa-shield-alt text-info mb-2"></i>
+                                    <h6>Безопасно</h6>
+                                    <p>Платежи через Stripe — международный стандарт</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="reason-item">
+                                    <i class="fas fa-money-bill-wave text-success mb-2"></i>
+                                    <h6>Единоразово</h6>
+                                    <p>Никаких подписок — плати один раз</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="reason-item">
+                                    <i class="fas fa-download text-primary mb-2"></i>
+                                    <h6>Навсегда</h6>
+                                    <p>PDF останется у тебя на всю жизнь</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5">
+                        <p class="text-muted">
+                            <i class="fas fa-heart text-danger me-1"></i>
+                            Помни: инвестиция в здоровье — лучшая инвестиция в жизни
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,292 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <div class="hero-badge mb-4">
+                        <i class="fas fa-star text-warning me-2"></i>
+                        AI-КОУЧ ПО ЗДОРОВЬЮ
+                    </div>
+                    <h1 class="hero-title mb-4">
+                        Получи <span class="text-primary">дерзкий</span> и <span class="text-success">заботливый</span> 
+                        отчёт о твоём здоровье
+                    </h1>
+                    <p class="hero-subtitle mb-4">
+                        Персонализированный анализ твоего образа жизни от AI-коуча Алекса. 
+                        Простые вопросы — глубокие ответы. Без скучных врачей, с заботой старшего брата.
+                    </p>
+                    <div class="hero-features mb-4">
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Персональные рекомендации
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            Анализ рисков для здоровья
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            7-дневный челлендж
+                        </div>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="{{ url_for('questionnaire') }}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-play me-2"></i>Проверить себя бесплатно
+                        </a>
+                        <button class="btn btn-outline-primary btn-lg" onclick="scrollToCoach()">
+                            <i class="fas fa-user me-2"></i>Познакомиться с коучем
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="hero-image">
+                    <div class="health-card">
+                        <div class="card-header">
+                            <h3>🧠 Твой результат</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="health-score">
+                                <div class="score-circle">
+                                    <span class="score-number">7.2</span>
+                                    <span class="score-max">/10</span>
+                                </div>
+                                <p class="score-text">Неплохо, но есть куда расти!</p>
+                            </div>
+                            <div class="health-tips">
+                                <div class="tip-item">
+                                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                                    <span>Мало сна = старение на скорости света</span>
+                                </div>
+                                <div class="tip-item">
+                                    <i class="fas fa-fire text-danger"></i>
+                                    <span>Пора двигаться, брат!</span>
+                                </div>
+                                <div class="tip-item">
+                                    <i class="fas fa-leaf text-success"></i>
+                                    <span>Добавь зелени в рацион</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="section-title">Как это работает?</h2>
+                <p class="section-subtitle">Простой процесс — мощные результаты</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h4>1. Заполни анкету</h4>
+                    <p>Ответь на простые вопросы о своём образе жизни, питании, сне и привычках. Это займёт всего 3 минуты.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h4>2. AI анализирует</h4>
+                    <p>Искусственный интеллект обрабатывает твои данные и создаёт персонализированный отчёт о здоровье.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-medical-alt"></i>
+                    </div>
+                    <h4>3. Получи отчёт</h4>
+                    <p>Бесплатная версия даёт общую картину. Полная версия — детальный анализ с PDF для скачивания.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Section -->
+<section class="pricing-section py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="section-title">Выбери свой формат</h2>
+                <p class="section-subtitle">Бесплатно попробовать или получить полный разбор</p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-5 mb-4">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Бесплатный отчёт</h3>
+                        <div class="price">
+                            <span class="price-number">0</span>
+                            <span class="price-currency">₽</span>
+                        </div>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Общая оценка состояния
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Главные риски
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Топ-5 рекомендаций
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Первые шаги
+                        </div>
+                    </div>
+                    <a href="{{ url_for('questionnaire') }}" class="btn btn-outline-primary btn-lg w-100">
+                        Попробовать бесплатно
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 mb-4">
+                <div class="pricing-card featured">
+                    <div class="pricing-badge">Рекомендуем</div>
+                    <div class="pricing-header">
+                        <h3>Полный отчёт</h3>
+                        <div class="price">
+                            <span class="price-number">999</span>
+                            <span class="price-currency">₽</span>
+                        </div>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Всё из бесплатной версии
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Подробный анализ по каждой сфере
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Список потенциальных болезней
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Персональные рекомендации
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check text-success me-2"></i>
+                            7-дневный челлендж
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check text-success me-2"></i>
+                            PDF для скачивания
+                        </div>
+                    </div>
+                    <a href="{{ url_for('questionnaire') }}" class="btn btn-primary btn-lg w-100">
+                        Начать с бесплатной версии
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Coach Section -->
+<section id="coach-section" class="coach-section py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="coach-image">
+                    <img src="{{ url_for('static', filename='images/alex-coach.jpg') }}" alt="AI Coach Alex" class="img-fluid rounded-4 shadow">
+                    <div class="coach-badge">
+                        <i class="fas fa-robot me-2"></i>AI Coach
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="coach-content">
+                    <div class="section-badge mb-3">
+                        <i class="fas fa-user-tie me-2"></i>ЗНАКОМЬСЯ
+                    </div>
+                    <h2 class="mb-4">Алекс — твой AI-коуч по здоровью</h2>
+                    <p class="lead mb-4">
+                        Привет! Я Алекс — искусственный интеллект, который говорит с тобой как заботливый старший брат. 
+                        Без занудства и медицинского жаргона.
+                    </p>
+                    <div class="coach-features">
+                        <div class="coach-feature">
+                            <i class="fas fa-heart text-danger me-3"></i>
+                            <div>
+                                <h5>Заботливый, но дерзкий</h5>
+                                <p>Скажу правду в глаза, но с любовью. Никакого сюсюканья — только реальные советы.</p>
+                            </div>
+                        </div>
+                        <div class="coach-feature">
+                            <i class="fas fa-bullseye text-primary me-3"></i>
+                            <div>
+                                <h5>Персональный подход</h5>
+                                <p>Учитываю твой возраст, образ жизни, цели и даже духовные практики.</p>
+                            </div>
+                        </div>
+                        <div class="coach-feature">
+                            <i class="fas fa-rocket text-success me-3"></i>
+                            <div>
+                                <h5>Конкретные действия</h5>
+                                <p>Не буду грузить теорией. Дам чёткий план, что делать сегодня, завтра и дальше.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <blockquote class="coach-quote">
+                        <p>"Брат, здоровье — это не скучно. Это твоя суперсила. Давай её прокачаем вместе!"</p>
+                        <footer>— AI Coach Алекс</footer>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5 bg-primary text-white">
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="mb-4">Готов узнать правду о своём здоровье?</h2>
+                <p class="lead mb-4">
+                    Не откладывай на завтра то, что может изменить твою жизнь уже сегодня. 
+                    Начни с бесплатного отчёта прямо сейчас!
+                </p>
+                <a href="{{ url_for('questionnaire') }}" class="btn btn-light btn-lg">
+                    <i class="fas fa-play me-2"></i>Начать анализ бесплатно
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function scrollToCoach() {
+    document.getElementById('coach-section').scrollIntoView({ 
+        behavior: 'smooth' 
+    });
+}
+</script>
+{% endblock %}

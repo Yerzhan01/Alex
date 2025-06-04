@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Твой отчёт о здоровье - AI Health Report{% endblock %}
+
+{% block extra_head %}
+<style>
+.report-content h1, .report-content h2, .report-content h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+.report-content ul, .report-content ol {
+    margin-bottom: 1rem;
+}
+.report-content li {
+    margin-bottom: 0.5rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="report-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Report Header -->
+                <div class="report-header text-center mb-5">
+                    <h1 class="mb-3">🎯 Твой персональный отчёт готов!</h1>
+                    <p class="lead">AI-коуч Алекс проанализировал твои данные</p>
+                </div>
+
+                <!-- Free Report -->
+                <div class="report-card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h3 class="mb-0">
+                            <i class="fas fa-gift me-2"></i>Бесплатный отчёт
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="report-content">
+                            {{ report.free_report|safe|nl2br }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upgrade to Full Report -->
+                {% if not report.is_paid %}
+                <div class="upgrade-section text-center mb-5">
+                    <div class="upgrade-card">
+                        <div class="upgrade-content">
+                            <h3>🔥 Хочешь полный разбор?</h3>
+                            <p class="lead">Получи детальный анализ на 4-5 страниц с конкретными рекомендациями</p>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="upgrade-features">
+                                        <h5>Что включено в полную версию:</h5>
+                                        <ul class="list-unstyled">
+                                            <li><i class="fas fa-check text-success me-2"></i>Подробный анализ по каждой сфере жизни</li>
+                                            <li><i class="fas fa-check text-success me-2"></i>Список потенциальных болезней и рисков</li>
+                                            <li><i class="fas fa-check text-success me-2"></i>Персональные рекомендации по питанию</li>
+                                            <li><i class="fas fa-check text-success me-2"></i>Пример режима дня и рациона</li>
+                                            <li><i class="fas fa-check text-success me-2"></i>Список необходимых анализов</li>
+                                            <li><i class="fas fa-check text-success me-2"></i>7-дневный челлендж "Анти-ленивец"</li>
+                                            <li><i class="fas fa-check text-success me-2"></i>PDF для скачивания</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="price-box">
+                                        <div class="price">
+                                            <span class="price-number">999</span>
+                                            <span class="price-currency">₽</span>
+                                        </div>
+                                        <p class="price-description">Единоразовый платёж</p>
+                                        <a href="{{ url_for('buy_full_report', session_id=report.session_id) }}" 
+                                           class="btn btn-primary btn-lg">
+                                            <i class="fas fa-rocket me-2"></i>Получить полный отчёт
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Full Report (if paid) -->
+                {% if report.is_paid and report.paid_report %}
+                <div class="report-card mb-4">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">
+                            <i class="fas fa-star me-2"></i>Полный отчёт
+                        </h3>
+                        <a href="{{ url_for('download_pdf', session_id=report.session_id) }}" 
+                           class="btn btn-light btn-sm">
+                            <i class="fas fa-download me-2"></i>Скачать PDF
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <div class="report-content">
+                            {{ render_full_report(report.paid_report) }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Share Section -->
+                <div class="share-section text-center mt-5">
+                    <h4>Поделись результатами</h4>
+                    <div class="share-buttons">
+                        <button class="btn btn-info me-2" onclick="shareToTelegram()">
+                            <i class="fab fa-telegram-plane me-2"></i>Telegram
+                        </button>
+                        <button class="btn btn-success me-2" onclick="shareToWhatsApp()">
+                            <i class="fab fa-whatsapp me-2"></i>WhatsApp
+                        </button>
+                        <button class="btn btn-secondary" onclick="copyLink()">
+                            <i class="fas fa-link me-2"></i>Копировать ссылку
+                        </button>
+                    </div>
+                </div>
+
+                <!-- New Report Button -->
+                <div class="text-center mt-5">
+                    <a href="{{ url_for('questionnaire') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-plus me-2"></i>Создать новый отчёт
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function shareToTelegram() {
+    const text = "Получил персональный отчёт о здоровье от AI-коуча! Попробуй и ты: " + window.location.origin;
+    const url = `https://t.me/share/url?url=${encodeURIComponent(window.location.origin)}&text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+}
+
+function shareToWhatsApp() {
+    const text = "Получил персональный отчёт о здоровье от AI-коуча! Попробуй и ты: " + window.location.origin;
+    const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+}
+
+function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(function() {
+        alert('Ссылка скопирована в буфер обмена!');
+    });
+}
+
+// Auto-expand collapsible sections in full report
+document.addEventListener('DOMContentLoaded', function() {
+    const reportContent = document.querySelector('.report-content');
+    if (reportContent) {
+        // Add collapsible functionality to report sections
+        const headers = reportContent.querySelectorAll('h2, h3');
+        headers.forEach(header => {
+            if (header.textContent.includes('🧠') || 
+                header.textContent.includes('📊') || 
+                header.textContent.includes('⚠️') ||
+                header.textContent.includes('🛠️') ||
+                header.textContent.includes('🥊') ||
+                header.textContent.includes('🔥')) {
+                
+                header.style.cursor = 'pointer';
+                header.style.borderBottom = '1px solid #ddd';
+                header.style.paddingBottom = '10px';
+                header.style.marginBottom = '15px';
+                
+                // Find next sibling elements until next header
+                let nextElement = header.nextElementSibling;
+                const sectionElements = [];
+                
+                while (nextElement && !nextElement.matches('h2, h3')) {
+                    sectionElements.push(nextElement);
+                    nextElement = nextElement.nextElementSibling;
+                }
+                
+                // Add click handler
+                header.addEventListener('click', function() {
+                    const isExpanded = !header.classList.contains('collapsed');
+                    
+                    sectionElements.forEach(el => {
+                        el.style.display = isExpanded ? 'none' : 'block';
+                    });
+                    
+                    header.classList.toggle('collapsed');
+                    
+                    // Add/remove arrow icon
+                    const arrow = header.querySelector('.arrow') || document.createElement('span');
+                    arrow.className = 'arrow float-end';
+                    arrow.innerHTML = isExpanded ? '<i class="fas fa-chevron-down"></i>' : '<i class="fas fa-chevron-up"></i>';
+                    
+                    if (!header.querySelector('.arrow')) {
+                        header.appendChild(arrow);
+                    }
+                });
+                
+                // Add initial arrow
+                const arrow = document.createElement('span');
+                arrow.className = 'arrow float-end';
+                arrow.innerHTML = '<i class="fas fa-chevron-up"></i>';
+                header.appendChild(arrow);
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+
+{% macro render_full_report(content) %}
+{{ content|safe|nl2br }}
+{% endmacro %}
