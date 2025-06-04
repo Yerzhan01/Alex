@@ -133,8 +133,17 @@
                         </h3>
                         <div class="mb-3">
                             <label for="digital" class="form-label">Сколько времени проводишь в гаджетах?</label>
-                            <textarea class="form-control" id="digital" name="digital" rows="3" 
-                                placeholder="Например: телефон 8+ часов в день, ноутбук ещё 4 часа, почти всё свободное время в экранах..." required></textarea>
+                            <select class="form-select" id="digital_select" name="digital_select" onchange="toggleCustomInput('digital')">
+                                <option value="">Выбери вариант</option>
+                                <option value="2-4 часа в день, контролирую время">2-4 часа в день, контролирую время</option>
+                                <option value="5-7 часов в день">5-7 часов в день</option>
+                                <option value="8+ часов в день, постоянно в телефоне">8+ часов в день, постоянно в телефоне</option>
+                                <option value="почти всё свободное время в экранах">Почти всё свободное время в экранах</option>
+                                <option value="работаю за компьютером + телефон">Работаю за компьютером + телефон</option>
+                                <option value="other">Другое</option>
+                            </select>
+                            <textarea class="form-control mt-2 d-none" id="digital_custom" name="digital_custom" rows="2" 
+                                placeholder="Опиши подробнее время в гаджетах..."></textarea>
                         </div>
                     </div>
 
@@ -144,8 +153,18 @@
                         </h3>
                         <div class="mb-3">
                             <label for="habits" class="form-label">Что из вредного присутствует в твоей жизни?</label>
-                            <textarea class="form-control" id="habits" name="habits" rows="3" 
-                                placeholder="Например: курю иногда, пью кофе по 5 чашек в день, ем сладкое каждый день, алкоголь по выходным..." required></textarea>
+                            <select class="form-select" id="habits_select" name="habits_select" onchange="toggleCustomInput('habits')">
+                                <option value="">Выбери вариант</option>
+                                <option value="никаких вредных привычек">Никаких вредных привычек</option>
+                                <option value="пью много кофе (3+ чашки в день)">Пью много кофе (3+ чашки в день)</option>
+                                <option value="ем много сладкого">Ем много сладкого</option>
+                                <option value="курю иногда">Курю иногда</option>
+                                <option value="алкоголь по выходным">Алкоголь по выходным</option>
+                                <option value="несколько вредных привычек">Несколько вредных привычек</option>
+                                <option value="other">Другое</option>
+                            </select>
+                            <textarea class="form-control mt-2 d-none" id="habits_custom" name="habits_custom" rows="2" 
+                                placeholder="Опиши свои вредные привычки..."></textarea>
                         </div>
                     </div>
 

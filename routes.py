@@ -43,9 +43,9 @@ def submit_questionnaire():
             'nutrition': get_field_value('nutrition'),
             'activity': get_field_value('activity'),
             'sleep': get_field_value('sleep'),
-            'stress': request.form.get('stress', ''),
-            'digital': request.form.get('digital', ''),
-            'habits': request.form.get('habits', ''),
+            'stress': get_field_value('stress'),
+            'digital': get_field_value('digital'),
+            'habits': get_field_value('habits'),
             'religion': request.form.get('religion', ''),
             'goals': request.form.get('goals', '')
         }
