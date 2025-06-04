@@ -55,23 +55,43 @@ def submit_questionnaire():
         # Check if report already exists
         report = HealthReport.query.filter_by(session_id=session_id).first()
         if not report:
-            report = HealthReport(session_id=session_id)
+            report = HealthReport()
+            report.session_id = session_id
             db.session.add(report)
         
         # Save user data
         report.set_user_data(user_data)
-        
-        # Generate free report
-        free_report = generate_health_report(user_data, report_type='free')
-        report.free_report = free_report
-        
         db.session.commit()
         
-        return redirect(url_for('show_report', session_id=session_id))
+        # Show loading animation first
+        return render_template('loading_animation.html', session_id=session_id)
         
     except Exception as e:
         app.logger.error(f"Error processing questionnaire: {e}")
         flash('Произошла ошибка при обработке анкеты. Попробуйте снова.', 'error')
+        return redirect(url_for('questionnaire'))
+
+@app.route('/generate_report/<session_id>')
+def generate_report(session_id):
+    """Generate the actual report after loading animation"""
+    try:
+        report = HealthReport.query.filter_by(session_id=session_id).first()
+        if not report:
+            flash('Отчет не найден.', 'error')
+            return redirect(url_for('index'))
+        
+        # Generate free report if not already generated
+        if not report.free_report:
+            user_data = report.get_user_data()
+            free_report = generate_health_report(user_data, report_type='free')
+            report.free_report = free_report
+            db.session.commit()
+        
+        return redirect(url_for('show_report', session_id=session_id))
+        
+    except Exception as e:
+        app.logger.error(f"Error generating report: {e}")
+        flash('Ошибка при генерации отчета.', 'error')
         return redirect(url_for('questionnaire'))
 
 @app.route('/report/<session_id>')
@@ -209,28 +229,51 @@ def kaspi_webhook():
 def confirm_payment(session_id):
     """Manually confirm payment for fallback cases"""
     try:
+        app.logger.info(f"Processing payment confirmation for session: {session_id}")
+        
         report = HealthReport.query.filter_by(session_id=session_id).first()
         if not report:
+            app.logger.error(f"Report not found for session: {session_id}")
             flash('Отчет не найден.', 'error')
             return redirect(url_for('index'))
         
         payment_confirmed = request.form.get('payment_confirmed') == 'true'
+        app.logger.info(f"Payment confirmed: {payment_confirmed}")
         
         if payment_confirmed:
-            # Generate full detailed report
+            # Check if we already have user data
             user_data = report.get_user_data()
-            paid_report = generate_health_report(user_data, report_type='full')
+            if not user_data:
+                app.logger.error(f"No user data found for session: {session_id}")
+                flash('Данные не найдены. Пройдите анкету заново.', 'error')
+                return redirect(url_for('questionnaire'))
             
-            report.paid_report = paid_report
-            report.is_paid = True
-            db.session.commit()
+            app.logger.info("Generating full detailed report...")
             
-            return redirect(url_for('payment_success', session_id=session_id))
+            # Generate full detailed report
+            try:
+                paid_report = generate_health_report(user_data, report_type='full')
+                
+                report.paid_report = paid_report
+                report.is_paid = True
+                db.session.commit()
+                
+                app.logger.info("Payment confirmed and report generated successfully")
+                return redirect(url_for('payment_success', session_id=session_id))
+                
+            except Exception as report_error:
+                app.logger.error(f"Error generating paid report: {report_error}")
+                # Still mark as paid but with a simpler message
+                report.paid_report = "Отчет генерируется... Обновите страницу через минуту."
+                report.is_paid = True
+                db.session.commit()
+                return redirect(url_for('payment_success', session_id=session_id))
         else:
             flash('Платеж не подтвержден.', 'error')
             return redirect(url_for('show_report', session_id=session_id))
     
     except Exception as e:
-        app.logger.error(f"Error confirming payment: {e}")
-        flash('Ошибка при подтверждении платежа.', 'error')
+        app.logger.error(f"Critical error in payment confirmation: {str(e)}")
+        app.logger.exception("Full traceback:")
+        flash('Ошибка при подтверждении платежа. Обратитесь в поддержку.', 'error')
         return redirect(url_for('show_report', session_id=session_id))

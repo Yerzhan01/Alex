@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block title %}Генерирую отчет - AI Health Report{% endblock %}
+
+{% block content %}
+<section class="loading-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="loading-card">
+                    <div class="alex-avatar mb-4">
+                        <img src="{{ url_for('static', filename='images/alex-coach.jpg') }}" alt="AI Coach Alex" class="avatar-img">
+                        <div class="pulse-ring"></div>
+                        <div class="pulse-ring-2"></div>
+                    </div>
+                    
+                    <h1 class="loading-title mb-4">🧠 Алекс анализирует твои данные...</h1>
+                    
+                    <div class="progress-container mb-4">
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill"></div>
+                        </div>
+                        <p class="progress-text">Обрабатываю информацию о твоем здоровье</p>
+                    </div>
+                    
+                    <div class="analysis-steps">
+                        <div class="step active" id="step1">
+                            <i class="fas fa-user-check"></i>
+                            <span>Анализирую твой профиль</span>
+                        </div>
+                        <div class="step" id="step2">
+                            <i class="fas fa-heartbeat"></i>
+                            <span>Оцениваю состояние здоровья</span>
+                        </div>
+                        <div class="step" id="step3">
+                            <i class="fas fa-brain"></i>
+                            <span>Генерирую персональные рекомендации</span>
+                        </div>
+                        <div class="step" id="step4">
+                            <i class="fas fa-file-medical-alt"></i>
+                            <span>Создаю полный отчет</span>
+                        </div>
+                    </div>
+                    
+                    <div class="alex-messages">
+                        <div class="message-bubble active" id="msg1">
+                            "Хм, интересный случай... Вижу проблемы, но и потенциал есть!"
+                        </div>
+                        <div class="message-bubble" id="msg2">
+                            "Сейчас составлю для тебя персональный план действий..."
+                        </div>
+                        <div class="message-bubble" id="msg3">
+                            "Почти готово! Подготавливаю финальные рекомендации..."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.loading-section {
+    background: linear-gradient(135deg, #00a651 0%, #008a44 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+.loading-card {
+    padding: 3rem 2rem;
+}
+
+.alex-avatar {
+    position: relative;
+    display: inline-block;
+}
+
+.avatar-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid white;
+    position: relative;
+    z-index: 3;
+}
+
+.pulse-ring, .pulse-ring-2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 3px solid rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+.pulse-ring {
+    width: 140px;
+    height: 140px;
+}
+
+.pulse-ring-2 {
+    width: 160px;
+    height: 160px;
+    animation-delay: 1s;
+}
+
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0;
+    }
+}
+
+.loading-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+.progress-container {
+    margin: 2rem 0;
+}
+
+.progress-bar-custom {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ffffff, #f0f0f0);
+    border-radius: 10px;
+    width: 0%;
+    animation: fillProgress 10s ease-in-out infinite;
+}
+
+@keyframes fillProgress {
+    0% { width: 0%; }
+    25% { width: 25%; }
+    50% { width: 50%; }
+    75% { width: 75%; }
+    100% { width: 100%; }
+}
+
+.progress-text {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.analysis-steps {
+    margin: 3rem 0;
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    opacity: 0.5;
+    transition: all 0.5s ease;
+}
+
+.step.active {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.step i {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+}
+
+.alex-messages {
+    margin-top: 3rem;
+}
+
+.message-bubble {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 1.5rem;
+    border-radius: 20px;
+    margin: 1rem 0;
+    font-style: italic;
+    font-size: 1.1rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+}
+
+.message-bubble.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Animation timeline */
+.step:nth-child(1) { animation-delay: 0s; }
+.step:nth-child(2) { animation-delay: 2s; }
+.step:nth-child(3) { animation-delay: 4s; }
+.step:nth-child(4) { animation-delay: 6s; }
+
+@keyframes stepActivate {
+    0% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+</style>
+
+<script>
+// Auto-redirect after animation completes
+setTimeout(function() {
+    window.location.href = "/generate_report/{{ session_id }}";
+}, 12000);
+
+// Animate steps and messages
+setTimeout(() => document.getElementById('step2').classList.add('active'), 2500);
+setTimeout(() => {
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('msg1').classList.remove('active');
+    document.getElementById('msg2').classList.add('active');
+}, 3000);
+
+setTimeout(() => document.getElementById('step3').classList.add('active'), 5000);
+setTimeout(() => {
+    document.getElementById('step2').classList.remove('active');
+    document.getElementById('msg2').classList.remove('active');
+    document.getElementById('msg3').classList.add('active');
+}, 5500);
+
+setTimeout(() => document.getElementById('step4').classList.add('active'), 7500);
+setTimeout(() => document.getElementById('step3').classList.remove('active'), 8000);
+</script>
+{% endblock %}
