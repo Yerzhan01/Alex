@@ -703,6 +703,97 @@ textarea.form-control {
     100% { transform: rotate(360deg); }
 }
 
+/* Payment Page Styles */
+.payment-section {
+    background: var(--light);
+    min-height: 100vh;
+}
+
+.payment-card {
+    background: white;
+    padding: 3rem 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+}
+
+.payment-info {
+    background: var(--light);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    height: 100%;
+}
+
+.payment-instructions {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    height: 100%;
+}
+
+.payment-details {
+    margin-top: 1.5rem;
+}
+
+.detail-item {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-item label {
+    display: block;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.payment-value {
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+}
+
+.instruction-list {
+    margin-top: 1.5rem;
+    padding-left: 1.5rem;
+}
+
+.instruction-list li {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.payment-features {
+    background: var(--light);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    margin: 2rem 0;
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+}
+
+.feature-list li {
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.payment-actions {
+    margin: 2rem 0;
+}
+
+.payment-footer .alert {
+    text-align: left;
+    margin-bottom: 1rem;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;

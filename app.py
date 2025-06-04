@@ -28,6 +28,15 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 # Initialize the app with the extension
 db.init_app(app)
 
+# Add custom template filter
+def nl2br(value):
+    """Convert newlines to <br> tags"""
+    if not value:
+        return value
+    return value.replace('\n', '<br>\n')
+
+app.jinja_env.filters['nl2br'] = nl2br
+
 # Import routes after app creation to avoid circular imports
 with app.app_context():
     # Import models so their tables are created
