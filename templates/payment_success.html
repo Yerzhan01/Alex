@@ -1,69 +1,222 @@
 {% extends "base.html" %}
 
-{% block title %}Платёж успешен - AI Health Report{% endblock %}
+{% block title %}Платеж успешен - AI Health Report{% endblock %}
 
 {% block content %}
-<section class="success-section py-5">
+<section class="payment-success-section">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8 text-center">
                 <div class="success-card">
                     <div class="success-icon mb-4">
-                        <i class="fas fa-check-circle text-success"></i>
+                        <i class="fas fa-check-circle"></i>
                     </div>
-                    <h1 class="mb-4">🎉 Платёж прошёл успешно!</h1>
-                    <p class="lead mb-4">
-                        Отлично! Теперь у тебя есть доступ к полному отчёту от AI-коуча Алекса. 
-                        Готовься к серьёзному разбору твоего здоровья!
-                    </p>
                     
-                    <div class="success-features mb-5">
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <div class="feature-item">
-                                    <i class="fas fa-file-medical-alt text-primary mb-2"></i>
-                                    <h5>Подробный анализ</h5>
-                                    <p>4-5 страниц персональных рекомендаций</p>
-                                </div>
+                    <h1 class="success-title mb-3">Платеж успешен!</h1>
+                    <p class="success-subtitle mb-4">Спасибо за покупку полного отчета о здоровье</p>
+                    
+                    <div class="payment-details mb-5">
+                        <div class="detail-item">
+                            <span class="label">Сумма:</span>
+                            <span class="value">1₸</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Продукт:</span>
+                            <span class="value">AI Health Report - Полный отчет</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Статус:</span>
+                            <span class="value status-paid">Оплачено</span>
+                        </div>
+                    </div>
+                    
+                    <div class="next-steps">
+                        <h3 class="mb-3">Что дальше?</h3>
+                        <div class="steps-grid">
+                            <div class="step-item">
+                                <div class="step-number">1</div>
+                                <div class="step-text">Ваш полный отчет готов</div>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="feature-item">
-                                    <i class="fas fa-download text-success mb-2"></i>
-                                    <h5>PDF для скачивания</h5>
-                                    <p>Сохрани отчёт на все времена</p>
-                                </div>
+                            <div class="step-item">
+                                <div class="step-number">2</div>
+                                <div class="step-text">Скачайте PDF версию</div>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="feature-item">
-                                    <i class="fas fa-calendar-check text-warning mb-2"></i>
-                                    <h5>7-дневный челлендж</h5>
-                                    <p>Конкретный план действий</p>
-                                </div>
+                            <div class="step-item">
+                                <div class="step-number">3</div>
+                                <div class="step-text">Следуйте рекомендациям Алекса</div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="success-actions">
+                    
+                    <div class="action-buttons mt-5">
                         <a href="{{ url_for('show_report', session_id=session_id) }}" 
-                           class="btn btn-primary btn-lg me-3">
-                            <i class="fas fa-eye me-2"></i>Посмотреть полный отчёт
+                           class="btn btn-success btn-lg me-3">
+                            <i class="fas fa-file-medical-alt me-2"></i>Посмотреть полный отчет
                         </a>
                         <a href="{{ url_for('download_pdf', session_id=session_id) }}" 
-                           class="btn btn-success btn-lg">
+                           class="btn btn-outline-success btn-lg">
                             <i class="fas fa-download me-2"></i>Скачать PDF
                         </a>
                     </div>
-
-                    <div class="mt-5">
-                        <div class="alert alert-info">
-                            <i class="fas fa-lightbulb me-2"></i>
-                            <strong>Совет от Алекса:</strong> Сохрани отчёт в закладки и возвращайся к нему регулярно. 
-                            Здоровье — это марафон, а не спринт!
-                        </div>
+                    
+                    <div class="support-info mt-5">
+                        <p class="text-muted">
+                            <i class="fas fa-question-circle me-2"></i>
+                            Есть вопросы? Свяжитесь с нашей поддержкой
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<style>
+.payment-success-section {
+    background: linear-gradient(135deg, #00a651 0%, #008a44 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    color: white;
+    padding: 2rem 0;
+}
+
+.success-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    color: #333;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.success-icon {
+    font-size: 5rem;
+    color: #00a651;
+    animation: successPulse 2s infinite;
+}
+
+@keyframes successPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.success-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #00a651;
+}
+
+.success-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.payment-details {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.label {
+    font-weight: 500;
+    color: #666;
+}
+
+.value {
+    font-weight: 600;
+    color: #333;
+}
+
+.status-paid {
+    color: #00a651;
+    font-weight: 700;
+}
+
+.next-steps h3 {
+    color: #333;
+    margin-bottom: 1.5rem;
+}
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.step-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+}
+
+.step-item:hover {
+    transform: translateY(-5px);
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: #00a651;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin: 0 auto 1rem;
+}
+
+.step-text {
+    font-weight: 500;
+    color: #333;
+}
+
+.action-buttons {
+    margin: 2rem 0;
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 12px;
+}
+
+.support-info {
+    padding-top: 2rem;
+    border-top: 1px solid #e9ecef;
+}
+
+@media (max-width: 768px) {
+    .success-card {
+        padding: 2rem 1rem;
+    }
+    
+    .success-title {
+        font-size: 2rem;
+    }
+    
+    .action-buttons .btn-lg {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+</style>
 {% endblock %}

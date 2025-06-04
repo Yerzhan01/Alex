@@ -42,8 +42,28 @@
                     </div>
                 </div>
 
+                <!-- Payment Confirmation (if user returned after payment) -->
+                {% if not report.is_paid and report.payment_session_id %}
+                <div class="payment-confirmation-section text-center mb-5">
+                    <div class="alert alert-info">
+                        <h4><i class="fas fa-info-circle me-2"></i>Вы вернулись после оплаты?</h4>
+                        <p class="mb-3">Если вы успешно оплатили через Kaspi, нажмите кнопку ниже для получения полного отчета:</p>
+                        <form method="POST" action="{{ url_for('confirm_payment', session_id=report.session_id) }}" style="display: inline;">
+                            <input type="hidden" name="payment_confirmed" value="true">
+                            <button type="submit" class="btn btn-success btn-lg me-3">
+                                <i class="fas fa-check-circle me-2"></i>Я оплатил - получить полный отчет
+                            </button>
+                        </form>
+                        <a href="{{ url_for('buy_full_report', session_id=report.session_id) }}" 
+                           class="btn btn-outline-secondary">
+                            <i class="fas fa-redo me-2"></i>Попробовать оплату снова
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+
                 <!-- Upgrade to Full Report -->
-                {% if not report.is_paid %}
+                {% if not report.is_paid and not report.payment_session_id %}
                 <div class="upgrade-section text-center mb-5">
                     <div class="upgrade-card">
                         <div class="upgrade-content">
@@ -68,8 +88,8 @@
                                 <div class="col-md-6">
                                     <div class="price-box">
                                         <div class="price">
-                                            <span class="price-number">999</span>
-                                            <span class="price-currency">₽</span>
+                                            <span class="price-number">1</span>
+                                            <span class="price-currency">₸</span>
                                         </div>
                                         <p class="price-description">Единоразовый платёж</p>
                                         <a href="{{ url_for('buy_full_report', session_id=report.session_id) }}" 
