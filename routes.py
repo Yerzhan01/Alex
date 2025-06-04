@@ -120,6 +120,8 @@ def buy_full_report(session_id):
             account_id=session_id
         )
         
+        app.logger.info(f"Kaspi API response: {invoice_data}")
+        
         if invoice_data and 'paymentUrl' in invoice_data:
             # Save invoice ID for tracking and auto-confirm payment
             report.payment_session_id = invoice_data.get('_id')
