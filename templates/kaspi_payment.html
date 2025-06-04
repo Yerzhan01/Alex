@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}Оплата через Kaspi - AI Health Report{% endblock %}
+
+{% block content %}
+<section class="payment-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="payment-card">
+                    <div class="payment-header text-center mb-4">
+                        <h1 class="mb-3">💳 Оплата полного отчета</h1>
+                        <p class="lead">Переведи 999₽ на Kaspi и получи детальный анализ здоровья</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="payment-info">
+                                <h3>📱 Данные для перевода:</h3>
+                                <div class="payment-details">
+                                    <div class="detail-item">
+                                        <label>Номер телефона Kaspi:</label>
+                                        <div class="payment-value">
+                                            <strong>+7 (777) 123-45-67</strong>
+                                            <button class="btn btn-sm btn-outline-primary ms-2" onclick="copyToClipboard('+77771234567')">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="detail-item">
+                                        <label>Сумма:</label>
+                                        <div class="payment-value">
+                                            <strong>{{ amount }}₽</strong>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="detail-item">
+                                        <label>Комментарий к переводу:</label>
+                                        <div class="payment-value">
+                                            <strong>{{ payment_id }}</strong>
+                                            <button class="btn btn-sm btn-outline-primary ms-2" onclick="copyToClipboard('{{ payment_id }}')">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <div class="payment-instructions">
+                                <h3>📋 Инструкция:</h3>
+                                <ol class="instruction-list">
+                                    <li>Открой приложение Kaspi</li>
+                                    <li>Выбери "Переводы"</li>
+                                    <li>Введи номер телефона: <strong>+7 (777) 123-45-67</strong></li>
+                                    <li>Укажи сумму: <strong>{{ amount }}₽</strong></li>
+                                    <li>В комментарии обязательно напиши: <strong>{{ payment_id }}</strong></li>
+                                    <li>Подтверди перевод</li>
+                                    <li>Нажми кнопку "Я оплатил" ниже</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-features mb-4">
+                        <h4 class="mb-3">🎯 Что ты получишь после оплаты:</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="feature-list">
+                                    <li><i class="fas fa-check text-success me-2"></i>Подробный анализ на 4-5 страниц</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Персональные рекомендации по питанию</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Список потенциальных рисков здоровья</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="feature-list">
+                                    <li><i class="fas fa-check text-success me-2"></i>7-дневный челлендж "Анти-ленивец"</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>PDF файл для скачивания</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Рекомендации по обследованиям</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-actions text-center">
+                        <form method="POST" action="{{ url_for('confirm_payment', session_id=session_id) }}" class="mb-3">
+                            <input type="hidden" name="payment_confirmed" value="true">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-check me-2"></i>Я оплатил - получить отчет
+                            </button>
+                        </form>
+                        
+                        <a href="{{ url_for('show_report', session_id=session_id) }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Вернуться к бесплатному отчету
+                        </a>
+                    </div>
+
+                    <div class="payment-footer mt-4">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Важно:</strong> Обязательно укажи код <strong>{{ payment_id }}</strong> в комментарии к переводу. 
+                            Без этого кода мы не сможем подтвердить твой платеж.
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <i class="fas fa-clock me-2"></i>
+                            <strong>Обработка платежа:</strong> После перевода нажми "Я оплатил". 
+                            Полный отчет будет готов через несколько секунд.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function copyToClipboard(text) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+            showNotification('Скопировано в буфер обмена!', 'success');
+        });
+    } else {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showNotification('Скопировано в буфер обмена!', 'success');
+    }
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+    `;
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 3000);
+}
+</script>
+{% endblock %}

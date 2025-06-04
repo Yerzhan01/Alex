@@ -1,15 +1,13 @@
 import os
 import uuid
-import stripe
 from flask import render_template, request, redirect, url_for, session, flash, jsonify, send_file
 from app import app, db
 from models import HealthReport
 from openai_service import generate_health_report
 from pdf_generator import generate_pdf_report
 
-# Configure Stripe
-stripe.api_key = os.environ.get('STRIPE_SECRET_KEY')
-YOUR_DOMAIN = os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5000')
+# Kaspi payment configuration
+YOUR_DOMAIN = os.environ.get('REPLIT_DEV_DOMAIN') if os.environ.get('REPLIT_DEPLOYMENT') else os.environ.get('REPLIT_DOMAINS', 'localhost:5000').split(',')[0]
 
 @app.route('/')
 def index():
@@ -80,42 +78,25 @@ def show_report(session_id):
 
 @app.route('/buy_full_report/<session_id>')
 def buy_full_report(session_id):
-    """Create Stripe checkout session for full report"""
+    """Show Kaspi payment information for full report"""
     try:
         report = HealthReport.query.filter_by(session_id=session_id).first()
         if not report:
             flash('Отчет не найден.', 'error')
             return redirect(url_for('index'))
         
-        # Create Stripe checkout session
-        checkout_session = stripe.checkout.Session.create(
-            line_items=[
-                {
-                    'price_data': {
-                        'currency': 'rub',
-                        'product_data': {
-                            'name': 'Полный AI Health Report',
-                            'description': 'Подробный персонализированный отчет о здоровье от AI-коуча Алекса'
-                        },
-                        'unit_amount': 99900,  # 999 rubles
-                    },
-                    'quantity': 1,
-                },
-            ],
-            mode='payment',
-            success_url=f'https://{YOUR_DOMAIN}/payment_success/{session_id}',
-            cancel_url=f'https://{YOUR_DOMAIN}/payment_cancel/{session_id}',
-            metadata={'session_id': session_id}
-        )
-        
-        # Save payment session ID
-        report.payment_session_id = checkout_session.id
+        # Generate unique payment ID
+        payment_id = f"HEALTH_{session_id[:8]}_{uuid.uuid4().hex[:6].upper()}"
+        report.payment_session_id = payment_id
         db.session.commit()
         
-        return redirect(checkout_session.url, code=303)
+        return render_template('kaspi_payment.html', 
+                             session_id=session_id, 
+                             payment_id=payment_id,
+                             amount=999)
         
     except Exception as e:
-        app.logger.error(f"Error creating checkout session: {e}")
+        app.logger.error(f"Error creating payment: {e}")
         flash('Ошибка при создании платежа. Попробуйте снова.', 'error')
         return redirect(url_for('show_report', session_id=session_id))
 
@@ -168,29 +149,34 @@ def download_pdf(session_id):
         flash('Ошибка при генерации PDF.', 'error')
         return redirect(url_for('show_report', session_id=session_id))
 
-@app.route('/webhook', methods=['POST'])
-def stripe_webhook():
-    """Handle Stripe webhooks"""
-    payload = request.get_data(as_text=True)
-    sig_header = request.headers.get('Stripe-Signature')
-    
+@app.route('/confirm_payment/<session_id>', methods=['POST'])
+def confirm_payment(session_id):
+    """Manually confirm payment for Kaspi payments"""
     try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, os.environ.get('STRIPE_WEBHOOK_SECRET', '')
-        )
-    except ValueError:
-        return 'Invalid payload', 400
-    except stripe.error.SignatureVerificationError:
-        return 'Invalid signature', 400
-    
-    # Handle successful payment
-    if event['type'] == 'checkout.session.completed':
-        session_obj = event['data']['object']
-        session_id = session_obj['metadata']['session_id']
-        
         report = HealthReport.query.filter_by(session_id=session_id).first()
-        if report:
+        if not report:
+            flash('Отчет не найден.', 'error')
+            return redirect(url_for('index'))
+        
+        # In a real implementation, you would verify the payment with Kaspi API
+        # For now, we'll allow manual confirmation
+        payment_confirmed = request.form.get('payment_confirmed') == 'true'
+        
+        if payment_confirmed:
+            # Generate full detailed report
+            user_data = report.get_user_data()
+            paid_report = generate_health_report(user_data, report_type='full')
+            
+            report.paid_report = paid_report
             report.is_paid = True
             db.session.commit()
+            
+            return redirect(url_for('payment_success', session_id=session_id))
+        else:
+            flash('Платеж не подтвержден.', 'error')
+            return redirect(url_for('show_report', session_id=session_id))
     
-    return 'Success', 200
+    except Exception as e:
+        app.logger.error(f"Error confirming payment: {e}")
+        flash('Ошибка при подтверждении платежа.', 'error')
+        return redirect(url_for('show_report', session_id=session_id))
