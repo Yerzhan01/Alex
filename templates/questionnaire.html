@@ -113,8 +113,17 @@
                         </h3>
                         <div class="mb-3">
                             <label for="stress" class="form-label">Как справляешься со стрессом?</label>
-                            <textarea class="form-control" id="stress" name="stress" rows="3" 
-                                placeholder="Например: много работы, постоянно устаю, нервничаю по мелочам, не умею отдыхать..." required></textarea>
+                            <select class="form-select" id="stress_select" name="stress_select" onchange="toggleCustomInput('stress')">
+                                <option value="">Выбери вариант</option>
+                                <option value="хорошо справляюсь, умею расслабляться">Хорошо справляюсь, умею расслабляться</option>
+                                <option value="иногда нервничаю, но быстро успокаиваюсь">Иногда нервничаю, но быстро успокаиваюсь</option>
+                                <option value="часто в стрессе, много работы">Часто в стрессе, много работы</option>
+                                <option value="постоянно устаю, не умею отдыхать">Постоянно устаю, не умею отдыхать</option>
+                                <option value="нервничаю по мелочам">Нервничаю по мелочам</option>
+                                <option value="other">Другое</option>
+                            </select>
+                            <textarea class="form-control mt-2 d-none" id="stress_custom" name="stress_custom" rows="2" 
+                                placeholder="Опиши как справляешься со стрессом..."></textarea>
                         </div>
                     </div>
 

@@ -5,9 +5,11 @@ from app import app, db
 from models import HealthReport
 from openai_service import generate_health_report
 from pdf_generator import generate_pdf_report
+from kaspi_integration import KaspiPayment
 
 # Kaspi payment configuration
 YOUR_DOMAIN = os.environ.get('REPLIT_DEV_DOMAIN') if os.environ.get('REPLIT_DEPLOYMENT') else os.environ.get('REPLIT_DOMAINS', 'localhost:5000').split(',')[0]
+kaspi = KaspiPayment()
 
 @app.route('/')
 def index():
@@ -84,22 +86,37 @@ def show_report(session_id):
 
 @app.route('/buy_full_report/<session_id>')
 def buy_full_report(session_id):
-    """Show Kaspi payment information for full report"""
+    """Create Kaspi payment for full report"""
     try:
         report = HealthReport.query.filter_by(session_id=session_id).first()
         if not report:
             flash('Отчет не найден.', 'error')
             return redirect(url_for('index'))
         
-        # Generate unique payment ID
-        payment_id = f"HEALTH_{session_id[:8]}_{uuid.uuid4().hex[:6].upper()}"
-        report.payment_session_id = payment_id
-        db.session.commit()
+        # Create Kaspi invoice
+        invoice_data = kaspi.create_invoice(
+            amount=2990,
+            product_name="AI Health Report - Полный отчет о здоровье",
+            account_id=session_id
+        )
         
-        return render_template('kaspi_payment.html', 
-                             session_id=session_id, 
-                             payment_id=payment_id,
-                             amount=999)
+        if invoice_data and 'paymentUrl' in invoice_data:
+            # Save invoice ID for tracking
+            report.payment_session_id = invoice_data.get('_id')
+            db.session.commit()
+            
+            # Redirect to Kaspi payment page
+            return redirect(invoice_data['paymentUrl'])
+        else:
+            # Fallback to manual payment if API fails
+            payment_id = f"HEALTH_{session_id[:8]}_{uuid.uuid4().hex[:6].upper()}"
+            report.payment_session_id = payment_id
+            db.session.commit()
+            
+            return render_template('kaspi_payment.html', 
+                                 session_id=session_id, 
+                                 payment_id=payment_id,
+                                 amount=2990)
         
     except Exception as e:
         app.logger.error(f"Error creating payment: {e}")
@@ -155,17 +172,48 @@ def download_pdf(session_id):
         flash('Ошибка при генерации PDF.', 'error')
         return redirect(url_for('show_report', session_id=session_id))
 
+@app.route('/kaspi_webhook', methods=['POST'])
+def kaspi_webhook():
+    """Handle Kaspi payment webhooks"""
+    try:
+        # Verify webhook authenticity
+        if not kaspi.verify_webhook(request.headers, request.get_json()):
+            return 'Unauthorized', 401
+        
+        webhook_data = request.get_json()
+        invoice_id = webhook_data.get('invoiceId')
+        account_id = webhook_data.get('account', '').split('-')[0]  # Extract session_id
+        
+        if invoice_id and account_id:
+            # Find report by session_id
+            report = HealthReport.query.filter_by(session_id=account_id).first()
+            
+            if report and webhook_data.get('status') == 'PAID':
+                # Generate full detailed report
+                user_data = report.get_user_data()
+                paid_report = generate_health_report(user_data, report_type='full')
+                
+                report.paid_report = paid_report
+                report.is_paid = True
+                db.session.commit()
+                
+                return 'OK', 200
+        
+        return 'Payment not found', 404
+        
+    except Exception as e:
+        app.logger.error(f"Error processing Kaspi webhook: {e}")
+        return 'Error', 500
+
 @app.route('/confirm_payment/<session_id>', methods=['POST'])
 def confirm_payment(session_id):
-    """Manually confirm payment for Kaspi payments"""
+    """Manually confirm payment for fallback cases"""
     try:
         report = HealthReport.query.filter_by(session_id=session_id).first()
         if not report:
             flash('Отчет не найден.', 'error')
             return redirect(url_for('index'))
         
-        # In a real implementation, you would verify the payment with Kaspi API
-        # For now, we'll allow manual confirmation
         payment_confirmed = request.form.get('payment_confirmed') == 'true'
         
         if payment_confirmed:

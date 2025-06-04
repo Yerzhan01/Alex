@@ -37,7 +37,7 @@
                     </div>
                     <div class="card-body">
                         <div class="report-content">
-                            {{ report.free_report|nl2br|safe }}
+                            {{ report.free_report|clean_report|nl2br|safe }}
                         </div>
                     </div>
                 </div>
@@ -213,5 +213,5 @@ document.addEventListener('DOMContentLoaded', function() {
 {% endblock %}
 
 {% macro render_full_report(content) %}
-{{ content|nl2br|safe }}
+{{ content|clean_report|nl2br|safe }}
 {% endmacro %}

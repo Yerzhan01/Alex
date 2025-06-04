@@ -28,14 +28,44 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 # Initialize the app with the extension
 db.init_app(app)
 
-# Add custom template filter
+# Add custom template filters
 def nl2br(value):
-    """Convert newlines to <br> tags"""
+    """Convert newlines to <br> tags and clean formatting"""
     if not value:
         return value
+    # Remove markdown formatting
+    value = value.replace('**', '')
+    value = value.replace('*', '')
+    # Convert newlines to HTML breaks
     return value.replace('\n', '<br>\n')
 
+def clean_report(value):
+    """Clean report content from markdown and unnecessary symbols"""
+    if not value:
+        return value
+    
+    # Remove markdown bold formatting
+    value = value.replace('**', '')
+    
+    # Remove single asterisks used as bullets and replace with proper bullets
+    lines = value.split('\n')
+    cleaned_lines = []
+    
+    for line in lines:
+        line = line.strip()
+        if line.startswith('• ') or line.startswith('- '):
+            # Keep existing bullets
+            cleaned_lines.append(line)
+        elif line.startswith('*') and not line.startswith('**'):
+            # Replace asterisk bullets with proper bullets
+            cleaned_lines.append('• ' + line[1:].strip())
+        else:
+            cleaned_lines.append(line)
+    
+    return '\n'.join(cleaned_lines)
+
 app.jinja_env.filters['nl2br'] = nl2br
+app.jinja_env.filters['clean_report'] = clean_report
 
 # Import routes after app creation to avoid circular imports
 with app.app_context():
