@@ -1,7 +1,7 @@
 """Product settings for the landing. Edit here: brand, prices, colors."""
 import os
 
-BRAND = os.environ.get("SHOP_BRAND", "QALTA")
+BRAND = os.environ.get("SHOP_BRAND", "Elteres")
 
 # Prices in tenge. Delivery is included.
 PRICE_ONE = 25_000

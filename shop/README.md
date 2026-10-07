@@ -17,7 +17,7 @@ Flask-приложение: лендинг на трёх языках (`/` — �
 | `ADMIN_PASSWORD` | пароль к списку заказов `/admin` (логин любой) |
 | `DATABASE_URL` | база данных (по умолчанию SQLite `shop.db`) |
 | `SESSION_SECRET` | секрет Flask |
-| `SHOP_BRAND` | название бренда (по умолчанию `QALTA`) |
+| `SHOP_BRAND` | название бренда (по умолчанию `Elteres`) |
 
 В DauysKit нужно указать callbackUrl `https://<домен>/kaspi_webhook` и тот же токен, что и в `KASPI_WEBHOOK_TOKEN`.
 

@@ -81,7 +81,7 @@ p { margin: 0; }
 }
 .nav.is-scrolled { border-bottom-color: var(--line); }
 .nav-inner { display: flex; align-items: center; gap: 24px; height: 64px; }
-.logo { font-weight: 800; letter-spacing: .14em; text-decoration: none; font-size: 18px; }
+.logo { font-weight: 800; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; font-size: 18px; }
 .nav-links { display: flex; gap: 26px; margin-left: 24px; font-size: 15px; }
 .nav-links a { text-decoration: none; color: var(--ink-2); transition: color .2s; }
 .nav-links a:hover { color: var(--ink); }
