@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% from "_art.html" import phone, holder, icon %}
+{% set first_color = cfg.COLORS | list | first %}
+
+{% block body %}
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="{{ '/' if lang == 'kk' else '/' ~ lang }}">{{ brand }}</a>
+    <nav class="nav-links">
+      <a href="#features">{{ t.nav_features }}</a>
+      <a href="#gallery">{{ t.nav_gallery }}</a>
+      <a href="#faq">{{ t.nav_faq }}</a>
+    </nav>
+    <div class="nav-right">
+      <div class="langs" role="group" aria-label="Language">
+        {% for code in cfg.LANGUAGES %}
+        <a href="{{ '/' if code == 'kk' else '/' ~ code }}" lang="{{ code }}" {% if code == lang %}aria-current="true"{% endif %}>{{ texts[code].lang_name }}</a>
+        {% endfor %}
+      </div>
+      <button class="btn btn-dark btn-sm" data-buy>{{ t.buy }}</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero" style="--holder: {{ cfg.COLORS[first_color] }}">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow reveal">{{ t.hero_eyebrow }}</p>
+        <h1 class="reveal">{{ t.hero_title | safe }}</h1>
+        <p class="lead reveal">{{ t.hero_text }}</p>
+        <div class="hero-price reveal">
+          <span class="price-big">{{ price(cfg.PRICE_ONE) }}</span>
+          <span class="price-deal">{{ t.price_two_short.format(price=price(cfg.PRICE_TWO)) }}</span>
+        </div>
+        <div class="hero-actions reveal">
+          <button class="btn btn-dark btn-lg" data-buy>{{ t.buy }} {{ icon('arrow') }}</button>
+          <div class="swatches" role="radiogroup" aria-label="{{ t.pick_color }}">
+            {% for key, hex in cfg.COLORS.items() %}
+            <button class="swatch" role="radio" aria-checked="{{ 'true' if loop.first else 'false' }}" data-color="{{ key }}" style="--c: {{ hex }}" title="{{ t['color_' ~ key] }}" aria-label="{{ t['color_' ~ key] }}"></button>
+            {% endfor %}
+          </div>
+        </div>
+        <ul class="perks reveal">
+          <li>{{ icon('truck') }} {{ t.hero_delivery }}</li>
+          <li><span class="kaspi-dot"></span> {{ t.hero_kaspi }}</li>
+        </ul>
+      </div>
+      <div class="hero-art">
+        <div class="hero-glow"></div>
+        {{ phone('hero') }}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <div class="wrap">
+      <h2 class="reveal">{{ t.features_title | safe }}</h2>
+      <div class="features">
+        {% for n, ic in [(1, 'magnet'), (2, 'slim'), (3, 'cards'), (4, 'leaf')] %}
+        <article class="feature reveal" style="--d: {{ loop.index0 * 80 }}ms">
+          <span class="feature-icon">{{ icon(ic) }}</span>
+          <h3>{{ t['f%d_title' % n] }}</h3>
+          <p>{{ t['f%d_text' % n] }}</p>
+        </article>
+        {% endfor %}
+      </div>
+      <p class="compat reveal">{{ icon('check') }} {{ t.compat }}</p>
+    </div>
+  </section>
+
+  <section class="section section-tint" id="gallery">
+    <div class="wrap">
+      <h2 class="reveal">{{ t.gallery_title }}</h2>
+    </div>
+    <div class="gallery">
+      {% if photos %}
+        {% for src in photos %}
+        <figure class="shot reveal" style="--d: {{ loop.index0 * 80 }}ms">
+          <img src="{{ url_for('static', filename=src) }}" alt="{{ brand }} MagSafe" loading="lazy">
+        </figure>
+        {% endfor %}
+      {% else %}
+        {% for key, hex in cfg.COLORS.items() %}
+        <figure class="shot shot-placeholder reveal" style="--holder: {{ hex }}; --d: {{ loop.index0 * 80 }}ms">
+          {{ holder() }}
+          <figcaption>{{ t['color_' ~ key] }} · {{ t.photo_soon }}</figcaption>
+        </figure>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="section" id="offer">
+    <div class="wrap">
+      <h2 class="reveal">{{ t.offer_title }}</h2>
+      <p class="lead reveal">{{ t.offer_text }}</p>
+      <div class="offers">
+        <article class="offer reveal">
+          <div class="offer-art" style="--holder: {{ cfg.COLORS[first_color] }}">{{ holder() }}</div>
+          <h3>{{ t.offer_one }}</h3>
+          <p class="offer-price">{{ price(cfg.PRICE_ONE) }}</p>
+          <p class="offer-note">{{ icon('truck') }} {{ t.offer_delivery }}</p>
+          <button class="btn btn-ghost" data-buy data-qty="1">{{ t.buy }}</button>
+        </article>
+        <article class="offer offer-best reveal" style="--d: 100ms">
+          <span class="badge">{{ t.offer_popular }}</span>
+          <div class="offer-art offer-art-two">
+            {% for hex in (cfg.COLORS.values() | list)[:2] %}<span style="--holder: {{ hex }}">{{ holder() }}</span>{% endfor %}
+          </div>
+          <h3>{{ t.offer_two }}</h3>
+          <p class="offer-price">{{ price(cfg.PRICE_TWO) }} <s>{{ price(cfg.PRICE_ONE * 2) }}</s></p>
+          <p class="offer-note offer-save">{{ t.offer_save.format(amount=price(cfg.PRICE_ONE * 2 - cfg.PRICE_TWO)) }}</p>
+          <button class="btn btn-dark" data-buy data-qty="2">{{ t.buy }}</button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-tint">
+    <div class="wrap">
+      <h2 class="reveal">{{ t.steps_title }}</h2>
+      <ol class="steps">
+        {% for n in range(1, 4) %}
+        <li class="step reveal" style="--d: {{ loop.index0 * 100 }}ms">
+          <span class="step-num">{{ n }}</span>
+          <h3>{{ t['s%d_title' % n] }}</h3>
+          <p>{{ t['s%d_text' % n] }}</p>
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="faq">
+    <div class="wrap wrap-narrow">
+      <h2 class="reveal">{{ t.faq_title }}</h2>
+      <div class="faq">
+        {% for n in range(1, 5) %}
+        <details class="reveal">
+          <summary>{{ t['q%d' % n] }}<span class="faq-plus">{{ icon('plus') }}</span></summary>
+          <p>{{ t['a%d' % n] }}</p>
+        </details>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="wrap final-inner reveal">
+      <h2>{{ t.final_title }}</h2>
+      <p class="lead">{{ t.final_text }}</p>
+      <button class="btn btn-light btn-lg" data-buy>{{ t.buy }} — {{ price(cfg.PRICE_ONE) }} {{ icon('arrow') }}</button>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <span class="logo">{{ brand }}</span>
+    <span>© {{ brand }}. {{ t.footer }}</span>
+  </div>
+</footer>
+
+<div class="buybar" id="buybar">
+  <div>
+    <strong>{{ price(cfg.PRICE_ONE) }}</strong>
+    <span>{{ t.price_two_short.format(price=price(cfg.PRICE_TWO)) }}</span>
+  </div>
+  <button class="btn btn-dark" data-buy>{{ t.buy }}</button>
+</div>
+
+<dialog class="sheet" id="order" aria-labelledby="order-title">
+  <form class="sheet-body" id="order-form" novalidate>
+    <div class="sheet-head">
+      <h2 id="order-title">{{ t.order_title }}</h2>
+      <button type="button" class="icon-btn" data-close aria-label="{{ t.close }}">{{ icon('close') }}</button>
+    </div>
+
+    <h3 class="sheet-label">{{ t.order_colors }}</h3>
+    <ul class="picker">
+      {% for key, hex in cfg.COLORS.items() %}
+      <li class="pick" data-color="{{ key }}">
+        <span class="pick-swatch" style="--c: {{ hex }}"></span>
+        <span class="pick-name">{{ t['color_' ~ key] }}</span>
+        <div class="stepper">
+          <button type="button" class="icon-btn" data-step="-1" aria-label="−">{{ icon('minus') }}</button>
+          <output>0</output>
+          <button type="button" class="icon-btn" data-step="1" aria-label="+">{{ icon('plus') }}</button>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <h3 class="sheet-label">{{ t.order_contacts }}</h3>
+    <div class="fields">
+      <label class="field"><span>{{ t.field_name }}</span><input name="name" autocomplete="name" required maxlength="120"></label>
+      <label class="field"><span>{{ t.field_phone }}</span><input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7 7__ ___ __ __" required></label>
+      <label class="field"><span>{{ t.field_city }}</span><input name="city" autocomplete="address-level2" required maxlength="120"></label>
+      <label class="field"><span>{{ t.field_address }}</span><input name="address" autocomplete="street-address" required maxlength="300"></label>
+    </div>
+
+    <div class="sheet-foot">
+      <div class="total">
+        <div>
+          <span class="total-label">{{ t.total }} · <span id="total-qty">0</span> {{ t.pieces }}</span>
+          <span class="total-note">{{ icon('truck') }} {{ t.delivery_included }}</span>
+        </div>
+        <strong id="total-sum">0 ₸</strong>
+      </div>
+      <p class="form-error" id="form-error" role="alert" hidden></p>
+      <button type="submit" class="btn btn-kaspi btn-lg" id="pay-btn">{{ t.pay }}</button>
+    </div>
+  </form>
+</dialog>
+{% endblock %}
+
+{% block scripts %}
+<script id="shop-data" type="application/json">{{ js | tojson }}</script>
+<script src="{{ url_for('static', filename='js/shop.js') }}" defer></script>
+{% endblock %}

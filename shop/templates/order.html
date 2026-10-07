@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% from "_art.html" import icon %}
+
+{% block title %}{{ t.order_page_title.format(id=order.id) }} — {{ brand }}{% endblock %}
+
+{% block body %}
+<main class="status-page">
+  <div class="status-card" id="status" data-status="{{ order.status }}" data-token="{{ order.token }}" data-pay-url="{{ order.payment_url or '' }}">
+    <div data-show="pending" {% if order.status == 'paid' %}hidden{% endif %}>
+      <div class="status-icon pending"></div>
+      <h1>{{ t.order_pending_title }}</h1>
+      <p class="muted">{{ t.order_pending_text }}</p>
+    </div>
+    <div data-show="paid" {% if order.status != 'paid' %}hidden{% endif %}>
+      <div class="status-icon paid">{{ icon('check') }}</div>
+      <h1>{{ t.order_paid_title }}</h1>
+      <p class="muted">{{ t.order_paid_text }}</p>
+    </div>
+
+    <div class="summary">
+      <div><span>{{ t.order_page_title.format(id=order.id) }}</span><span></span></div>
+      {% for color, qty in order.get_items().items() %}
+      <div><span>{{ t['color_' ~ color] }}</span><span>{{ qty }} {{ t.pieces }}</span></div>
+      {% endfor %}
+      <div><span>{{ t.field_name }}</span><span>{{ order.name }}</span></div>
+      <div><span>{{ t.field_address }}</span><span>{{ order.city }}, {{ order.address }}</span></div>
+      <div><span>{{ t.total }}</span><strong>{{ price(order.total) }}</strong></div>
+    </div>
+
+    {% if order.payment_url %}
+    <a class="btn btn-kaspi btn-lg" href="{{ order.payment_url }}" data-show="pending" {% if order.status == 'paid' %}hidden{% endif %}>{{ t.pay }}</a>
+    {% endif %}
+    <a class="btn btn-ghost" href="{{ '/' if lang == 'kk' else '/' ~ lang }}">{{ t.order_back }}</a>
+  </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var card = document.getElementById("status");
+  var token = card.dataset.token;
+  function show(status) {
+    card.dataset.status = status;
+    card.querySelectorAll("[data-show]").forEach(function (el) { el.hidden = el.dataset.show !== status; });
+  }
+  if (card.dataset.status === "paid") return;
+
+  // Coming straight from the order form: send the buyer to Kaspi once.
+  var params = new URLSearchParams(location.search);
+  if (params.get("pay") === "1" && card.dataset.payUrl) {
+    history.replaceState(null, "", location.pathname);
+    setTimeout(function () { location.href = card.dataset.payUrl; }, 700);
+  }
+
+  var tries = 0;
+  var timer = setInterval(function () {
+    if (++tries > 120) return clearInterval(timer);  // ~10 minutes
+    fetch("/api/order/" + token + "/status")
+      .then(function (r) { return r.json(); })
+      .then(function (d) { if (d.status === "paid") { clearInterval(timer); show("paid"); } })
+      .catch(function () {});
+  }, 5000);
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Заказы — {{ brand }}{% endblock %}
+
+{% block body %}
+<main class="admin">
+  <h1 style="margin-bottom: 20px">Заказы {{ brand }}</h1>
+  <table>
+    <thead>
+      <tr><th>№</th><th>Дата (UTC)</th><th>Статус</th><th>Товар</th><th>Сумма</th><th>Имя</th><th>Телефон</th><th>Адрес</th></tr>
+    </thead>
+    <tbody>
+      {% for o in orders %}
+      <tr>
+        <td>{{ o.id }}</td>
+        <td>{{ o.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+        <td class="{{ o.status }}">{{ 'Оплачен' if o.status == 'paid' else 'Ждёт оплаты' }}</td>
+        <td>{% for color, qty in o.get_items().items() %}{{ t['color_' ~ color] }} × {{ qty }}<br>{% endfor %}</td>
+        <td>{{ price(o.total) }}</td>
+        <td>{{ o.name }}</td>
+        <td><a href="tel:{{ o.phone }}">{{ o.phone }}</a></td>
+        <td>{{ o.city }}, {{ o.address }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8">Пока нет заказов.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</main>
+{% endblock %}

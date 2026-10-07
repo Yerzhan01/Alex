@@ -1,0 +1,76 @@
+{# Product illustrations. The holder color comes from the CSS variable --holder. #}
+
+{% macro phone(id) -%}
+<svg class="art-phone" viewBox="0 0 320 600" role="img" aria-hidden="true">
+  <defs>
+    <linearGradient id="{{ id }}-body" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f3f1ec"/>
+      <stop offset="1" stop-color="#d9d5cc"/>
+    </linearGradient>
+    <linearGradient id="{{ id }}-card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffb36b"/>
+      <stop offset=".55" stop-color="#f1574a"/>
+      <stop offset="1" stop-color="#b8325c"/>
+    </linearGradient>
+    <linearGradient id="{{ id }}-shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity=".22"/>
+      <stop offset=".5" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="{{ id }}-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="#000" flood-opacity=".22"/>
+    </filter>
+  </defs>
+  <rect x="34" y="20" width="252" height="540" rx="50" fill="url(#{{ id }}-body)" stroke="#c9c4b9" stroke-width="2"/>
+  <rect x="58" y="44" width="116" height="116" rx="32" fill="#cfcac0"/>
+  <circle cx="92" cy="78" r="21" fill="#2a2a2c"/><circle cx="92" cy="78" r="11" fill="#14161c"/>
+  <circle cx="140" cy="126" r="21" fill="#2a2a2c"/><circle cx="140" cy="126" r="11" fill="#14161c"/>
+  <circle cx="140" cy="78" r="8" fill="#efece6"/>
+  <circle class="art-ring" cx="160" cy="330" r="84" fill="none" stroke="#b9b3a7" stroke-width="3" stroke-dasharray="5 7"/>
+  <g class="art-holder" filter="url(#{{ id }}-shadow)">
+    <g class="art-card">
+      <rect x="100" y="222" width="120" height="76" rx="9" fill="url(#{{ id }}-card)"/>
+      <rect x="114" y="238" width="22" height="16" rx="3" fill="#ffd98a" opacity=".9"/>
+    </g>
+    <rect x="88" y="244" width="144" height="180" rx="24" fill="var(--holder)"/>
+    <rect x="88" y="244" width="144" height="180" rx="24" fill="url(#{{ id }}-shine)"/>
+    <rect x="97" y="253" width="126" height="162" rx="17" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <path d="M136 244 a24 18 0 0 0 48 0" fill="#000" fill-opacity=".18"/>
+  </g>
+</svg>
+{%- endmacro %}
+
+{% macro holder() -%}
+<svg class="art-mini" viewBox="0 0 160 170" aria-hidden="true">
+  <rect x="26" y="8" width="108" height="66" rx="8" fill="#f1574a"/>
+  <rect x="38" y="20" width="20" height="14" rx="3" fill="#ffd98a"/>
+  <rect x="8" y="30" width="144" height="132" rx="24" fill="var(--holder)"/>
+  <rect x="17" y="39" width="126" height="114" rx="17" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <path d="M56 30 a24 18 0 0 0 48 0" fill="#000" fill-opacity=".18"/>
+</svg>
+{%- endmacro %}
+
+{% macro icon(name) -%}
+<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+{%- if name == 'magnet' -%}
+  <path d="M6 3v8a6 6 0 0 0 12 0V3"/><path d="M6 7h4M14 7h4"/><path d="M10 3v8a2 2 0 0 0 4 0V3"/>
+{%- elif name == 'slim' -%}
+  <rect x="4" y="6" width="16" height="12" rx="3"/><path d="M8 12h8"/>
+{%- elif name == 'cards' -%}
+  <rect x="3" y="7" width="15" height="10" rx="2"/><path d="M6 4h13a2 2 0 0 1 2 2v9"/><path d="M3 11h15"/>
+{%- elif name == 'leaf' -%}
+  <path d="M5 19c0-8 6-14 15-14 0 9-6 15-14 15"/><path d="M5 19l7-7"/>
+{%- elif name == 'truck' -%}
+  <path d="M3 6h11v10H3zM14 10h4l3 3v3h-7"/><circle cx="7" cy="17.5" r="1.5"/><circle cx="17" cy="17.5" r="1.5"/>
+{%- elif name == 'check' -%}
+  <path d="M5 12.5l4.5 4.5L19 7"/>
+{%- elif name == 'plus' -%}
+  <path d="M12 5v14M5 12h14"/>
+{%- elif name == 'minus' -%}
+  <path d="M5 12h14"/>
+{%- elif name == 'close' -%}
+  <path d="M6 6l12 12M18 6L6 18"/>
+{%- elif name == 'arrow' -%}
+  <path d="M5 12h14M13 6l6 6-6 6"/>
+{%- endif -%}
+</svg>
+{%- endmacro %}
